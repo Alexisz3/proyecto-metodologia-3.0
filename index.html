@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Multicultural de Cuenca</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main id="main-content">
+        <section id="start-screen" class="active">
+            <h1>Quiz Multicultural<br><span>Cuenca - Ecuador</span></h1>
+            <p>¿Cuánto sabes de nuestra ciudad?<br>Elige una categoría para comenzar:</p>
+            <div class="categories">
+                <button class="category-btn" data-category="musica">🎶 Música</button>
+                <button class="category-btn" data-category="comida">🍲 Comida</button>
+                <button class="category-btn" data-category="arte">🎨 Arte</button>
+                <button class="category-btn" data-category="cultura">🌎 Cultura General</button>
+            </div>
+        </section>
+
+        <section id="quiz-screen">
+            <div class="quiz-header">
+                <h2 id="quiz-category"></h2>
+                <span id="quiz-progress"></span>
+            </div>
+            <div id="progress-bar-wrap">
+                <div id="progress-bar"></div>
+            </div>
+            <div class="quiz-media">
+                <img id="quiz-image" src="" alt="Imagen categoría" />
+                <button id="music-btn" title="Música On/Off">🎵</button>
+                <span id="score-current"></span>
+            </div>
+            <div id="quiz-timer" class="timer"></div>
+            <div id="quiz-question"></div>
+            <div id="quiz-options"></div>
+            <button id="skip-btn" class="hidden">Saltar</button>
+            <button id="next-btn" class="hidden">Siguiente</button>
+        </section>
+
+        <section id="result-screen">
+            <h2>¡Quiz terminado!</h2>
+            <p id="final-score"></p>
+    
+        </section>
+    </main>
+    <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+    <script src="scripts.js"></script>
+</body>
+</html>

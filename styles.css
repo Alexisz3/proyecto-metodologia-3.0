@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap');
+
+body {
+    min-height: 100vh;
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: #fff;
+    margin: 0;
+    overflow-x: hidden;
+    background:url('img/cuenca3.jpg') center center/cover no-repeat fixed;
+
+
+}
+main, section {
+    position: relative;
+    z-index: 1;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+section {
+    display: none;
+    background: rgba(30, 30, 60, 0.93);
+    border-radius: 32px;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.15);
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    max-width: 420px;
+    width: 98vw;
+    animation: slideIn 0.7s;
+}
+
+section.active {
+    display: block;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    line-height: 1.15;
+    letter-spacing: 2px;
+    color: #ffbe0b;
+    text-shadow: 1px 3px 5px #333c;
+}
+h1 span { font-size: 1.5rem; color: #fff; }
+h2 { margin: 0.7em 0 0.6em; font-size: 1.8rem; text-align: center; color: #fff; }
+p { text-align: center; }
+
+.categories {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 2rem;
+}
+
+.category-btn {
+    padding: 1rem 0;
+    border: none;
+    border-radius: 18px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, #f72585 0%, #7209b7 100%);
+    color: #fff;
+    box-shadow: 0 4px 18px #0002;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.4s;
+    outline: none;
+    letter-spacing: 1.5px;
+}
+.category-btn:hover {
+    background: linear-gradient(90deg, #ffbe0b 0%, #3a86ff 100%);
+    transform: scale(1.08) rotate(-2deg);
+    box-shadow: 0 8px 28px #0005;
+}
+
+/* Barra de progreso */
+#progress-bar-wrap {
+    width: 100%;
+    background: #ffffff22;
+    border-radius: 12px;
+    height: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px #0003;
+}
+#progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #06d6a0 0%, #ffbe0b 100%);
+    width: 0%;
+    border-radius: 12px 0 0 12px;
+    transition: width 0.4s;
+}
+
+/* Visual: por categoría */
+body.tema-musica section { border: 3px solid #3a86ff; }
+body.tema-comida section { border: 3px solid #ffbe0b; }
+body.tema-arte section   { border: 3px solid #06d6a0; }
+body.tema-cultura section{ border: 3px solid #f72585; }
+
+/* Quiz multimedia */
+.quiz-media {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0 8px 0;
+}
+
+
+#home-btn {
+    margin: 1.3rem auto 0 auto;
+    display: block;
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, #ffbe0b 0%, #3a86ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 0.7em 2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.13s;
+    box-shadow: 0 3px 12px #0003;
+}
+#home-btn:hover {
+    background: linear-gradient(90deg, #06d6a0 0%, #ff006e 100%);
+    transform: scale(1.05);
+}
+
+#quiz-image {
+    
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    display: block;
+    margin: 24px auto 16px auto;
+border-radius: 32px; /* Esquinas redondeadas */
+    background: #fff1;   /* Opcional: fondo suave para resaltar el logo */
+}
+#music-btn {
+    background: #fff2;
+    color: #ffbe0b;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.3em;
+    cursor: pointer;
+    margin: 0 10px;
+    box-shadow: 0 1px 5px #0004;
+    transition: background .2s;
+    padding: 0.3em 0.5em;
+}
+#music-btn.music-off {
+    color: #999;
+    background: #fff3;
+}
+#score-current {
+    font-weight: bold;
+    color: #06d6a0;
+    font-size: 1.12em;
+    letter-spacing: 1px;
+}
+
+#quiz-category {
+    font-size: 1.3rem;
+    color: #ffbe0b;
+    font-weight: bold;
+}
+#quiz-progress {
+    font-size: 1rem;
+    color: #ffbe0b;
+    background: #fff2;
+    border-radius: 8px;
+    padding: 0.22em 0.7em;
+    letter-spacing: 2px;
+}
+#quiz-timer, .timer {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: bold;
+    text-align: right;
+    margin-bottom: 10px;
+    color: #ffbe0b;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 5px #0008;
+}
+#quiz-question {
+    font-size: 1.2rem;
+    margin-bottom: 1.4rem;
+    min-height: 60px;
+    animation: fadeIn 0.5s;
+}
+#quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+.option-btn {
+    background: linear-gradient(90deg, #06d6a0 0%, #3a86ff 100%);
+    border: none;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    color: #fff;
+    padding: 0.7em 0;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.13s, box-shadow 0.13s, background 0.2s;
+    outline: none;
+    box-shadow: 0 2px 12px #0001;
+}
+.option-btn:hover:not(.disabled) {
+    background: linear-gradient(90deg, #ffbe0b 0%, #ff006e 100%);
+    transform: scale(1.03);
+    box-shadow: 0 4px 16px #0003;
+}
+.option-btn.correct {
+    background: linear-gradient(90deg, #06d6a0 60%, #43ff64 100%);
+    color: #222;
+    animation: correctPulse 0.35s;
+}
+.option-btn.incorrect {
+    background: linear-gradient(90deg, #ff006e 0%, #f72585 100%);
+    color: #fff;
+    animation: shake 0.35s;
+}
+.option-btn.disabled {
+    pointer-events: none;
+    opacity: 0.72;
+}
+#next-btn, #skip-btn, #restart-btn {
+    margin: 1.3rem auto 0 auto;
+    display: block;
+    font-size: 1.2rem;
+    background: linear-gradient(90deg, #3a86ff 0%, #06d6a0 100%);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 0.85em 2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.13s;
+    box-shadow: 0 3px 12px #0003;
+}
+#next-btn:hover, #skip-btn:hover, #restart-btn:hover {
+    background: linear-gradient(90deg, #ffbe0b 0%, #ff006e 100%);
+    transform: scale(1.05);
+}
+#skip-btn { background: linear-gradient(90deg, #ffbe0b 0%, #ff006e 100%); color:#fff; margin-top:0.7em;}
+#skip-btn:disabled { opacity:0.4; pointer-events:none; }
+#result-screen h2 {
+    color: #06d6a0;
+    font-size: 2.2rem;
+}
+.hidden { display: none !important; }
+/* Transiciones fade */
+.fade-enter {
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 0.5s, transform 0.5s;
+}
+.fade-enter-active {
+    opacity: 1;
+    transform: scale(1);
+}
+/* Animaciones */
+@keyframes slideIn {
+    from { transform: translateY(35px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes shake {
+    10%, 90% { transform: translateX(-3px); }
+    20%, 80% { transform: translateX(5px); }
+    30%, 50%, 70% { transform: translateX(-10px); }
+    40%, 60% { transform: translateX(10px); }
+}
+@keyframes correctPulse {
+    0% { box-shadow: 0 0 0 0 #43ff6466; }
+    70% { box-shadow: 0 0 0 12px #43ff6400; }
+    100% { box-shadow: 0 0 0 0 #43ff6400; }
+}
+/* Confeti */
+.confetti-canvas {
+    position: fixed;
+    pointer-events: none;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 9999;
+}
+/* Responsive */
+@media (max-width: 520px) {
+    section { padding: 1.1rem 0.5rem; }
+    h1 { font-size: 2rem; }
+    #main-content { min-height: 90vh; }
+}
