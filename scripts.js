@@ -472,18 +472,3 @@ window.mostrarRespuestas = function() {
     <button onclick="location.reload()">Volver al inicio</button>`;
 };
 
-function cambiarFondo(categoria) {
-  const contenedor = document.getElementById("mainContainer");
-
-  const fondos = {
-    musica: "url('img/cuenca.jpg')",
-    arte: "url('imagenes/fondo-arte.jpg')",
-    comida: "url('imagenes/fondo-comida.jpg')",
-    celebridades: "url('imagenes/fondo-celebridades.jpg')",
-    cultura: "url('imagenes/fondo-cultura.jpg')"
-  };
-
-  contenedor.style.backgroundImage = fondos[categoria] || "none";
-  contenedor.style.backgroundSize = "cover";
-  contenedor.style.backgroundPosition = "center";
-}
