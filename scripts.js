@@ -208,38 +208,21 @@ const preguntas = {
         }
     ]
 };
+// (Elimina esta declaración duplicada de preguntas)
 
+// ==== Variables globales ====
 const audioCorrect = new Audio('mp3/correct.mp3');
+audioCorrect.volume = 0.5;
 const audioWrong = new Audio('mp3/incorrect.mp3');
-// ====== Variables globales ======
+audioWrong.volume = 0.1;
 const audioBg = new Audio('mp3/oriental.mp3');
 audioBg.loop = true;
 audioBg.volume = 0.5;
 
-// Habilitar el audio tras la primera interacción del usuario
-window.addEventListener('click', () => {
-    if (audioBg.paused) {
-        audioBg.play().catch(()=>{});
-    }
-}, { once: true });
-
-const homeBtn = document.getElementById('home-btn');
-if (homeBtn) {
-    homeBtn.addEventListener('click', () => {
-        // Oculta todas las pantallas
-        startScreen.classList.add('active');
-        quizScreen.classList.remove('active');
-        resultScreen.classList.remove('active');
-        // Puedes reiniciar variables aquí si lo necesitas
-    });
-}
-
-const categoryImages = {
-    musica: 'img/logo.png',
-    comida: 'img/logo.png',
-    arte:   'img/logo.png',
-    cultura:'img/logo.png'
-};
+let currentCategory = "", currentIndex = 0, score = 0, timer = null, timeLeft = 30;
+let saltoUsado = false, respuestas = [];
+let avanceTimeout = null;
+let musicOn = true;
 
 const startScreen = document.getElementById('start-screen');
 const quizScreen = document.getElementById('quiz-screen');
@@ -256,65 +239,27 @@ const quizOptions = document.getElementById('quiz-options');
 const nextBtn = document.getElementById('next-btn');
 const skipBtn = document.getElementById('skip-btn');
 const finalScore = document.getElementById('final-score');
-const restartBtn = document.getElementById('restart-btn');
-const confettiCanvas = document.getElementById('confetti-canvas');
+const homeBtn = document.getElementById('home-btn');
+const exitBtn = document.getElementById('exit-btn');
+const downloadBtn = document.getElementById('download-image');
+const shareButtons = document.getElementById('share-buttons');
+const shareWhatsapp = document.getElementById('share-whatsapp');
+const shareInstagram = document.getElementById('share-Instagram');
+const copyResultBtn = document.getElementById('copy-result');
 
-let currentCategory = "", currentIndex = 0, score = 0, timer = null, timeLeft = 30;
-let saltoUsado = false, respuestas = [];
-
-// =============== Eventos ===============
-document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        currentCategory = btn.dataset.category;
-        currentIndex = 0;
-        score = 0;
-        saltoUsado = false;
-        respuestas = [];
-        showSection(quizScreen);
-        mostrarPregunta();
-        if(musicOn) audioBg.play();
-    });
-
-    
-
-});
-nextBtn.addEventListener('click', () => {
-    currentIndex++;
-    if (currentIndex < preguntas[currentCategory].length) {
-        mostrarPregunta();
-    } else {
-        mostrarResultado();
-    }
-});
-skipBtn.addEventListener('click', () => {
-    if (!saltoUsado) {
-        saltoUsado = true;
-        currentIndex++;
-        if (currentIndex < preguntas[currentCategory].length) {
-            mostrarPregunta();
-        } else {
-            mostrarResultado();
-        }
-        skipBtn.disabled = true;
-        skipBtn.classList.add('hidden');
-    }
-});
-restartBtn.addEventListener('click', () => {
-    showSection(startScreen);
-    audioBg.pause();
-});
-musicBtn.onclick = () => {
-    musicOn = !musicOn;
-    if (musicOn) {
-        audioBg.play();
-        musicBtn.classList.remove('music-off');
-    } else {
-        audioBg.pause();
-        musicBtn.classList.add('music-off');
-    }
+const categoryImages = {
+    musica: 'img/logo.png',
+    comida: 'img/logo.png',
+    arte: 'img/logo.png',
+    cultura: 'img/logo.png'
 };
 
-
+function mezclarArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 
 
 function showSection(section) {
@@ -322,17 +267,17 @@ function showSection(section) {
     section.classList.add('active');
     nextBtn.classList.add('hidden');
     clearInterval(timer);
+    clearTimeout(avanceTimeout);
     quizTimer.textContent = "";
 
-    // Música SOLO en la pantalla principal
     if (section === startScreen) {
-        audioBg.play().catch(() => {}); // Intenta reproducir
+        audioBg.play().catch(() => {});
+        document.body.style.backgroundImage = 'url(img/fondo-inicio.jpg)';
     } else {
         audioBg.pause();
         audioBg.currentTime = 0;
     }
 }
-
 
 function setTheme() {
     document.body.classList.remove('tema-musica', 'tema-comida', 'tema-arte', 'tema-cultura');
@@ -340,7 +285,7 @@ function setTheme() {
 }
 
 function updateProgressBar() {
-    const percent = ((currentIndex+1) / preguntas[currentCategory].length) * 100;
+    const percent = ((currentIndex + 1) / preguntas[currentCategory].length) * 100;
     progressBar.style.width = percent + '%';
 }
 
@@ -354,6 +299,7 @@ function fadeInPregunta() {
 
 function mostrarPregunta() {
     clearInterval(timer);
+    clearTimeout(avanceTimeout);
     timeLeft = 30;
     quizOptions.innerHTML = "";
     nextBtn.classList.add('hidden');
@@ -365,6 +311,7 @@ function mostrarPregunta() {
     skipBtn.disabled = saltoUsado;
     quizImage.src = categoryImages[currentCategory];
     scoreCurrent.innerHTML = `Puntaje: ${score} / ${preguntas[currentCategory].length}`;
+
     const preguntaObj = preguntas[currentCategory][currentIndex];
     quizCategory.textContent = {
         musica: 'Música 🎶',
@@ -374,15 +321,19 @@ function mostrarPregunta() {
     }[currentCategory];
     quizProgress.textContent = `${currentIndex + 1}/${preguntas[currentCategory].length}`;
     quizQuestion.textContent = preguntaObj.pregunta;
+
     preguntaObj.opciones.forEach((opcion, idx) => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
         btn.textContent = opcion;
+        btn.disabled = false;
+        btn.classList.remove('correct', 'incorrect', 'disabled');
         btn.addEventListener('click', () => seleccionarRespuesta(btn, idx, true));
         quizOptions.appendChild(btn);
     });
+
     respuestas[currentIndex] = null;
-    // Iniciar cronómetro
+
     timer = setInterval(() => {
         timeLeft--;
         quizTimer.textContent = `⏰ ${timeLeft}s`;
@@ -395,80 +346,162 @@ function mostrarPregunta() {
 
 function seleccionarRespuesta(btn, idx, userClicked = true) {
     clearInterval(timer);
+    clearTimeout(avanceTimeout);
+
     const preguntaObj = preguntas[currentCategory][currentIndex];
     const correcta = preguntaObj.respuesta;
+
     document.querySelectorAll('.option-btn').forEach((b, i) => {
+        b.disabled = true;
         b.classList.add('disabled');
         if (i === correcta) b.classList.add('correct');
         if (userClicked && i === idx && idx !== correcta) b.classList.add('incorrect');
     });
+
     if (userClicked) {
         respuestas[currentIndex] = { esc: idx, correcto: idx === correcta };
-        if (idx === correcta) { audioCorrect.currentTime = 0; audioCorrect.play(); score++; }
-        else { audioWrong.currentTime = 0; audioWrong.play(); }
+        if (idx === correcta) {
+            audioCorrect.currentTime = 0;
+            audioCorrect.play();
+            score++;
+        } else {
+            audioWrong.currentTime = 0;
+            audioWrong.play();
+        }
     } else {
         respuestas[currentIndex] = { esc: null, correcto: false };
-        audioWrong.currentTime = 0; audioWrong.play();
+        audioWrong.currentTime = 0;
+        audioWrong.play();
     }
+
     scoreCurrent.innerHTML = `Puntaje: ${score} / ${preguntas[currentCategory].length}`;
     nextBtn.classList.remove('hidden');
     skipBtn.classList.add('hidden');
+
+    avanceTimeout = setTimeout(() => {
+        currentIndex++;
+        if (currentIndex < preguntas[currentCategory].length) {
+            mostrarPregunta();
+        } else {
+            mostrarResultado();
+        }
+    }, 3000);
 }
 
-// =============== Confeti ===============
-function confettiExplosion() {
-    const ctx = confettiCanvas.getContext('2d');
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
-    const pieces = Array.from({length: 120}, () => ({
-        x: Math.random()*confettiCanvas.width,
-        y: Math.random()*confettiCanvas.height/2,
-        r: 3+Math.random()*4,
-        c: `hsl(${Math.random()*360},80%,60%)`,
-        dx: -2+Math.random()*4,
-        dy: 2+Math.random()*5
-    }));
-    let t = 0;
-    function draw() {
-        ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-        pieces.forEach(p => {
-            ctx.beginPath();
-            ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
-            ctx.fillStyle=p.c; ctx.fill();
-            p.x+=p.dx; p.y+=p.dy;
-            p.dy+=0.13;
-            if(p.y>confettiCanvas.height) p.y=confettiCanvas.height+30;
-        });
-        t++;
-        if(t<70) requestAnimationFrame(draw);
-        else ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-    }
-    draw();
-}
-
-// =============== Resultados y resumen ===============
 function mostrarResultado() {
     showSection(resultScreen);
     clearInterval(timer);
-    let resHtml = `<b>${score}</b> de <b>${preguntas[currentCategory].length}</b> puntos.<br><br>`;
-    resHtml += `<button onclick="mostrarRespuestas()">Ver Respuestas</button><br><br>`;
-    resHtml += score === preguntas[currentCategory].length ? '¡Eres un/a crack cuencano/a!' : '¡Intenta mejorar tu puntaje!';
-    finalScore.innerHTML = resHtml;
-    if(score === preguntas[currentCategory].length) confettiExplosion();
+
+    const total = preguntas[currentCategory].length;
+    finalScore.innerHTML = `
+        <b>${score}</b> de <b>${total}</b> puntos.<br><br>
+        <button onclick="mostrarRespuestas()">Ver Respuestas</button><br><br>
+        ${score === total ? '¡Eres un/a crack cuencano/a!' : '¡Intenta mejorar tu puntaje!'}
+    `;
+
+    document.getElementById('screenshot-category').textContent = {
+        musica: 'Música 🎶',
+        comida: 'Comida 🍲',
+        arte: 'Arte 🎨',
+        cultura: 'Cultura General 🌎'
+    }[currentCategory];
+    document.getElementById('screenshot-score').textContent = `${score} / ${total}`;
+
+    downloadBtn.onclick = () => {
+        const area = document.getElementById('screenshot-card');
+        html2canvas(area).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'resultado-quiz-cuenca.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    };
+
+    shareButtons.classList.remove('hidden');
+    const url = encodeURIComponent(window.location.href);
+    const texto = encodeURIComponent(`¡Acabo de jugar el Quiz de Cuenca y obtuve ${score} de ${total} puntos! ¿Puedes superarme?`);
+
+    shareWhatsapp.onclick = () => {
+        window.open(`https://api.whatsapp.com/send?text=${texto}%20${url}`, '_blank');
+    };
+
+    shareInstagram.onclick = () => {
+        window.open(`https://twitter.com/intent/tweet?text=${texto}&url=${url}`, '_blank');
+    };
+
+    copyResultBtn.onclick = () => {
+        const copyText = `¡Acabo de jugar el Quiz de Cuenca y obtuve ${score} de ${total} puntos! Pruébalo tú también: ${window.location.href}`;
+        navigator.clipboard.writeText(copyText)
+            .then(() => alert('Resultado copiado al portapapeles ✅'))
+            .catch(() => alert('No se pudo copiar el resultado ❌'));
+    };
 }
 
-window.mostrarRespuestas = function() {
-    let lista = '<ol style="text-align:left">';
-    preguntas[currentCategory].forEach((preg, i) => {
-        let r = respuestas[i];
-        let correct = preg.opciones[preg.respuesta];
-        let esc = r && r.esc !== null ? preg.opciones[r.esc] : "<i>No contestó</i>";
-        let color = r && r.correcto ? '#06d6a0' : '#ff006e';
-        lista += `<li><b>${preg.pregunta}</b><br>
-        <span style="color:${color};">Tu respuesta: ${esc}</span><br>
-        <span style="color:#ffbe0b;">Correcta: ${correct}</span></li><br>`;
-    });
-    finalScore.innerHTML = `<h3>Resumen</h3>${lista}</ol>
-    <button onclick="location.reload()">Volver al inicio</button>`;
-};
+function reiniciar() {
+    currentIndex = 0;
+    score = 0;
+    saltoUsado = false;
+    respuestas = [];
+    showSection(startScreen);
+}
 
+if (musicBtn) {
+    musicBtn.onclick = () => {
+        musicOn = !musicOn;
+        if (musicOn) {
+            audioBg.play().catch(() => {});
+            musicBtn.classList.remove('fa-volume-xmark');
+            musicBtn.classList.add('fa-volume-high');
+        } else {
+            audioBg.pause();
+            musicBtn.classList.remove('fa-volume-high');
+            musicBtn.classList.add('fa-volume-xmark');
+        }
+    };
+}
+
+if (homeBtn) {
+    homeBtn.addEventListener('click', () => reiniciar());
+}
+
+if (exitBtn) {
+    exitBtn.addEventListener('click', () => {
+        if (confirm('¿Deseas salir del quiz?')) reiniciar();
+    });
+}
+
+document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        currentCategory = btn.dataset.category;
+        if (!preguntas[currentCategory]) return;
+        mezclarArray(preguntas[currentCategory]);
+        currentIndex = 0;
+        score = 0;
+        saltoUsado = false;
+        respuestas = [];
+        showSection(quizScreen);
+        document.body.style.backgroundImage = `url(img/fondo-${currentCategory}.jpg)`;
+        mostrarPregunta();
+    });
+});
+
+nextBtn.addEventListener('click', () => {
+    currentIndex++;
+    if (currentIndex < preguntas[currentCategory].length) {
+        mostrarPregunta();
+    } else {
+        mostrarResultado();
+    }
+});
+
+skipBtn.addEventListener('click', () => {
+    saltoUsado = true;
+    skipBtn.disabled = true;
+    skipBtn.classList.add('hidden');
+    clearInterval(timer);
+    clearTimeout(avanceTimeout);
+    seleccionarRespuesta(null, preguntas[currentCategory][currentIndex].respuesta, false);
+});
+
+showSection(startScreen);
+showSection(startScreen);
