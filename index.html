@@ -1,89 +1,132 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Multicultural de Cuenca</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Multicultural de Cuenca</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-    <main id="main-content">
-        <section id="start-screen" class="active">
-            <h1>Quiz Multicultural<br><span>Cuenca - Ecuador</span></h1>
-            <p>¿Cuánto sabes de nuestra ciudad?<br>Elige una categoría para comenzar:</p>
-            <div class="categories">
-                <button class="category-btn" data-category="musica">🎶 Música</button>
-                <button class="category-btn" data-category="comida">🍲 Comida</button>
-                <button class="category-btn" data-category="arte">🎨 Arte</button>
-                <button class="category-btn" data-category="cultura">🌎 Cultura General</button>
-            </div>
-        </section>
+  <main id="main-content">
+    <!-- Pantalla de inicio -->
+    <section id="start-screen" class="active">
+      <h1>Quiz Multicultural<br><span>Cuenca - Ecuador</span></h1>
+      <p>¿Cuánto sabes de nuestra ciudad?<br>Elige una categoría para comenzar:</p>
+      <div class="categories">
+        <button class="category-btn" data-category="musica">🎶 Música</button>
+        <button class="category-btn" data-category="comida">🍲 Comida</button>
+        <button class="category-btn" data-category="arte">🎨 Arte</button>
+        <button class="category-btn" data-category="cultura">🌎 Cultura General</button>
+      </div>
+    </section>
 
-        
-        <section id="quiz-screen">
-            <div class="quiz-header">
-                <h2 id="quiz-category"></h2>
-                <span id="quiz-progress"></span>
-            </div>
-            <div id="progress-bar-wrap">
-                <div id="progress-bar"></div>
-            </div>
-            <div class="quiz-media">
-                <img id="quiz-image" src="" alt="Imagen categoría" />
-                <button id="music-btn" title="Música On/Off">🎵</button>
-                <span id="score-current"></span>
-            </div>
-            <div id="quiz-timer" class="timer"></div>
-            <div id="quiz-question"></div>
-            <div id="quiz-options"></div>
-            <button id="skip-btn" class="hidden">Saltar</button>
-            <button id="next-btn" class="hidden">Siguiente</button>
-            <button id="exit-btn" class="exit-btn">🏠 Volver al inicio</button>
+    <!-- Pantalla del quiz -->
+    <section id="quiz-screen">
+      <div class="quiz-header">
+        <h2 id="quiz-category"></h2>
+        <span id="quiz-progress"></span>
+      </div>
+      <div id="progress-bar-wrap">
+        <div id="progress-bar"></div>
+      </div>
+      <div class="quiz-media">
+        <img id="quiz-image" src="" alt="Imagen categoría" />
+        <button id="music-btn" title="Música On/Off">🎵</button>
+        <span id="score-current"></span>
+      </div>
+      <div id="quiz-timer" class="timer"></div>
+      <div id="quiz-question"></div>
+      <div id="quiz-options"></div>
+      <button id="skip-btn" class="hidden">Saltar</button>
+      <button id="next-btn" class="hidden">Siguiente</button>
+      <button id="exit-btn" class="exit-btn">🏠 Volver al inicio</button>
+    </section>
 
-        </section>
+    <!-- Pantalla de resultados -->
+    <section id="result-screen">
 
-        <section id="result-screen">
-            <div id="screenshot-area" style="position:absolute; top:-9999px; left:-9999px;">
-    <div id="screenshot-card" style="
-        width: 600px;
-        height: 315px;
-        background: linear-gradient(135deg, #00b4d8, #03045e);
-        color: white;
-        padding: 30px;
-        font-family: 'Arial', sans-serif;
-        border-radius: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 0 20px rgba(0,0,0,0.4);
-    ">
-        <h2 style="font-size: 28px; margin: 0;">🎉 Quiz de Cuenca</h2>
-        <p style="font-size: 22px; margin: 10px 0;">Categoría: <b id="screenshot-category"></b></p>
-        <p style="font-size: 24px; margin: 10px 0;">Puntaje: <b id="screenshot-score"></b></p>
-        <p style="font-size: 18px; margin-top: 20px;">¡Juega tú también en [tu web o enlace]!</p>
-    </div>
+<!-- Botón volver al inicio -->
+<div style="text-align: center; margin-top: 30px;">
+  <button id="exit-btn-result" class="exit-btn">🏠 Volver al inicio</button>
 </div>
 
-            <h2>¡Quiz terminado!</h2>
-            <p id="final-score"></p>
-    <div id="share-buttons" class="share-buttons hidden">
-  <button id="share-whatsapp" class="share-btn whatsapp">📱 WhatsApp</button>
-  <button id="share-Instagram" class="share-btn Instagram">🐦 Instagram</button>
-  <button id="copy-result" class="share-btn copy">📋 Copiar</button>
-  <button id="download-image" class="share-btn">🖼️ Descargar imagen</button>
 
-</div>
+      <!-- Imagen para compartir -->
+      <div id="screenshot-area" style="position:absolute; top:-9999px; left:-9999px;">
+        <div id="screenshot-card" style="
+          width: 600px;
+          height: 315px;
+          background: linear-gradient(135deg, #00b4d8, #03045e);
+          color: white;
+          padding: 30px;
+          font-family: 'Arial', sans-serif;
+          border-radius: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          box-shadow: 0 0 20px rgba(0,0,0,0.4);
+        ">
+          <h2 style="font-size: 28px; margin: 0;">🎉 Quiz de Cuenca</h2>
+          <p style="font-size: 22px; margin: 10px 0;">Categoría: <b id="screenshot-category"></b></p>
+          <p style="font-size: 24px; margin: 10px 0;">Puntaje: <b id="screenshot-score"></b></p>
+          <p style="font-size: 18px; margin-top: 20px;">¡Juega tú también en [tu web o enlace]!</p>
+        </div>
+      </div>
 
-        </section>
-    </main>
-     
-    <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
-    <script src="scripts.js"></script>
+      <h2>¡Quiz terminado!</h2>
+      <p id="final-score"></p>
 
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+      <!-- Botones para compartir -->
+      <div id="share-buttons" class="share-buttons" style="
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        text-align: center;
+        margin-top: 20px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        z-index: 5;
+        position: relative;
+        pointer-events: auto;
+      ">
+        <button id="share-whatsapp" class="share-btn whatsapp" style="margin: 10px;">
+          <img src="img/whatsapp.png" alt="WhatsApp" style="height:20px; vertical-align:middle;"> WhatsApp
+        </button>
+        <button id="share-Instagram" class="share-btn instagram" style="margin: 10px;">
+          <img src="img/instagram.png" alt="Instagram" style="height:20px; vertical-align:middle;"> Instagram
+        </button>
+        <button id="copy-result" class="share-btn copy" style="margin: 10px;">
+          <img src="img/copiar.png" alt="Copiar" style="height:20px; vertical-align:middle;"> Copiar
+        </button>
+        <button id="download-image" class="share-btn" style="margin: 10px;">
+          <img src="img/descargas.png" alt="Descargar" style="height:20px; vertical-align:middle;"> Descargar imagen
+        </button>
+      </div>
 
+      <!-- Formulario EmailJS -->
+      <form id="email-form" style="margin-top: 30px; text-align: center;">
+        <label for="email">📧 Enviar resultados por correo:</label><br>
+        <input type="email" id="email" placeholder="Tu correo" required style="margin: 10px 0; padding: 8px;" />
+        <button type="submit">Enviar</button>
+        <p id="email-status" style="margin-top: 10px;"></p>
+      </form>
+    </section>
+  </main>
 
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="scripts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("TU_USER_ID_EMAILJS"); // Reemplaza con tu user ID de EmailJS
+    })();
+  </script>
 </body>
 </html>

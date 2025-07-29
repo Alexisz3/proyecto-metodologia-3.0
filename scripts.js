@@ -244,7 +244,7 @@ const exitBtn = document.getElementById('exit-btn');
 const downloadBtn = document.getElementById('download-image');
 const shareButtons = document.getElementById('share-buttons');
 const shareWhatsapp = document.getElementById('share-whatsapp');
-const shareInstagram = document.getElementById('share-Instagram');
+const shareInstagram = document.getElementById('share-instagram');
 const copyResultBtn = document.getElementById('copy-result');
 
 const categoryImages = {
@@ -426,7 +426,7 @@ function mostrarResultado() {
     };
 
     shareInstagram.onclick = () => {
-        window.open(`https://twitter.com/intent/tweet?text=${texto}&url=${url}`, '_blank');
+        window.open(`https://instagram.com/send?text=${texto}&url=${url}`, '_blank');
     };
 
     copyResultBtn.onclick = () => {
@@ -505,3 +505,84 @@ skipBtn.addEventListener('click', () => {
 
 showSection(startScreen);
 showSection(startScreen);
+
+document.getElementById('email-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const total = preguntas[currentCategory].length;
+
+    const message = `
+        Obtuviste ${score} de ${total} puntos en el Quiz de Cuenca en la categoría "${currentCategory.toUpperCase()}".<br><br>
+        ${respuestas.map((r, i) => {
+            const preg = preguntas[currentCategory][i];
+            const userResp = r?.esc !== null ? preg.opciones[r.esc] : 'Sin respuesta';
+            const correct = preg.opciones[preg.respuesta];
+            const estado = r?.correcto ? "✅" : "❌";
+            return `<b>${i + 1}.</b> ${preg.pregunta}<br>
+                    Tu respuesta: ${userResp}<br>
+                    Correcta: ${correct} ${estado}<br><br>`;
+        }).join('')}
+    `;
+
+    const params = {
+        user_email: email,
+        subject: 'Resultado del Quiz de Cuenca',
+        message_html: message
+    };
+
+    emailjs.send('default_service', 'plantilla_quiz', params)
+        .then(() => {
+            document.getElementById('email-status').textContent = '✅ Resultado enviado correctamente.';
+        }, (error) => {
+            document.getElementById('email-status').textContent = '❌ Error al enviar el correo.';
+            console.error(error);
+        });
+});
+
+function mostrarRespuestas() {
+    const total = preguntas[currentCategory].length;
+
+    const resumen = respuestas.map((r, i) => {
+        const preg = preguntas[currentCategory][i];
+        const userResp = r?.esc !== null ? preg.opciones[r.esc] : 'Sin respuesta';
+        const correct = preg.opciones[preg.respuesta];
+        const estado = r?.correcto ? "✅" : "❌";
+
+        return `
+            <div style="text-align:left; margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 8px;">
+                <b>${i + 1}. ${preg.pregunta}</b><br>
+                <span>Tu respuesta: <i>${userResp}</i></span><br>
+                <span>Respuesta correcta: <b>${correct}</b> ${estado}</span>
+            </div>
+        `;
+    }).join('');
+
+    finalS
+}
+
+function mostrarRespuestas() {
+    const total = preguntas[currentCategory].length;
+    let resultadoHTML = `<h3>Respuestas detalladas:</h3><ul style="text-align:left;">`;
+
+    preguntas[currentCategory].forEach((preg, i) => {
+        const r = respuestas[i];
+        const userResp = r?.esc !== null && r?.esc !== undefined ? preg.opciones[r.esc] : 'Sin respuesta';
+        const correct = preg.opciones[preg.respuesta];
+        const estado = r?.correcto ? "✅" : "❌";
+        resultadoHTML += `
+            <li style="margin-bottom: 10px;">
+                <b>${i + 1}.</b> ${preg.pregunta}<br>
+                <span>Tu respuesta: <b>${userResp}</b></span><br>
+                <span>Correcta: <b>${correct}</b> ${estado}</span>
+            </li>`;
+    });
+
+    resultadoHTML += `</ul>`;
+
+    finalScore.innerHTML += resultadoHTML;
+}
+
+document.getElementById('exit-btn-result').addEventListener('click', () => {
+  document.getElementById('result-screen').classList.remove('active');
+  document.getElementById('start-screen').classList.add('active');
+});
